@@ -65,6 +65,8 @@ classifiers = [  # Optional
 dependencies = [ # Optional
   "pandas",
   "data-science-types",
+  "types-python-dateutil",
+  "mock",
   "openpyxl",
 ]
 
@@ -91,11 +93,11 @@ test = ["coverage"]
 # maintainers, and where to support the project financially. The key is
 # what's used to render the link text on PyPI.
 [project.urls]  # Optional
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Reports" = "https://github.com/pypa/sampleproject/issues"
-"Funding" = ""
-"Say Thanks!" = ""
-"Source" = ""
+"Homepage" = "https://github.com/enric-serra-sanz/fitfile"
+"Bug Reports" = "https://github.com/enric-serra-sanz/fitfile/issues"
+#"Funding" = ""
+#"Say Thanks!" = ""
+#"Source" = ""
 
 # The following would provide a command line executable called `sample`
 # which executes the function `main` from this package when invoked.
