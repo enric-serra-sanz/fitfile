@@ -8,6 +8,7 @@ from typing import (
     List,
     Optional,
 )
+from copy import deepcopy
 
 
 class AbstractDataRule(ABC):
@@ -17,15 +18,16 @@ class AbstractDataRule(ABC):
             fields = []
         self.fields: List[str] = fields
 
-    @abstractmethod
     def apply_rule(self) -> pandas.DataFrame:
         """
-        Apply this specific rule to the dataframe and return a transformed dataframe, a no side
-        effect function, performance notice the deepcopy, if performance is an issue then modify
-        the original dataframe and live with side effects
+        Apply this specific rule to the dataframe and return a transformed dataframe, where all
+        age, date of birth, and year of birth fields are converted to a band of 10 up to 90+
         :return: A pandas.DataFrame with the specific transformation applied
         """
-        pass
+        new_df = deepcopy(self.dataframe)
+        for field in self.fields:
+            new_df[field] = new_df[field].apply(self.transform_datum, True)
+        return new_df
 
     @abstractmethod
     def transform_datum(self, datum: Any) -> Any:

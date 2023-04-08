@@ -7,6 +7,8 @@ setup(
     version='0.0.1',
     packages=find_packages('src'),
     install_requires=[
+        'types-python-dateutil',
+        'mock',
         'data-science-types',
         'pandas',
         'openpyxl',
