@@ -20,9 +20,7 @@ class AgeBandRule(AbstractDataRule):
             if isinstance(datum, int) or isinstance(datum, float):
                 if datum < 0:
                     raise AgeDatumException(
-                        'Negative values are not supported for age, got {}'.format(
-                            datum
-                        ))
+                        'Negative values are not supported for age, got {}'.format(datum))
                 return self._to_ten_up_to_ninety_multiple(int(datum))
             date_of_birth = datetime.date.fromisoformat(datum)
             now = datetime.datetime.now()

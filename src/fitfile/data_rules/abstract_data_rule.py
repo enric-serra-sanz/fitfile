@@ -12,19 +12,18 @@ from copy import deepcopy
 
 
 class AbstractDataRule(ABC):
-    def __init__(self, dataframe: pandas.DataFrame, fields: Optional[List[str]] = None) -> None:
-        self.dataframe: pandas.DataFrame = dataframe
+    def __init__(self, fields: Optional[List[str]] = None) -> None:
         if fields is None:
             fields = []
         self.fields: List[str] = fields
 
-    def apply_rule(self) -> pandas.DataFrame:
+    def apply_rule(self, dataframe: pandas.DataFrame) -> pandas.DataFrame:
         """
         Apply this specific rule to the dataframe and return a transformed dataframe, where all
         age, date of birth, and year of birth fields are converted to a band of 10 up to 90+
         :return: A pandas.DataFrame with the specific transformation applied
         """
-        new_df = deepcopy(self.dataframe)
+        new_df = deepcopy(dataframe)
         for field in self.fields:
             new_df[field] = new_df[field].apply(self.transform_datum, True)
         return new_df

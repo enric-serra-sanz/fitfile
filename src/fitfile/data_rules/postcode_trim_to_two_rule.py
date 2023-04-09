@@ -7,24 +7,30 @@ from copy import deepcopy
 
 class PostCodeTrimToTwoRule(AbstractDataRule):
     def __repr__(self) -> str:
-        return 'Rule one – Age Band Group'
+        return 'Rule three – Trim postcode to 2 entries0 when less than 10'
 
-    def apply_rule(self) -> pandas.DataFrame:
+    def apply_rule(self, dataframe: pandas.DataFrame) -> pandas.DataFrame:
         """
         Overwrites the original apply_rule, and does a group by and conditional before transforming
         :return: A transformed dataframe
         """
-        new_df = deepcopy(self.dataframe)
+        def transform_if_lt_ten(row):  # type: ignore
+            """
+            Inner function to keep context
+            :param row: The row to process
+            :return: Modified row if counts < 10, unmodified row otherwise
+            """
+            if row['postcode_counts'] < 10:
+                row[field] = self.transform_datum(row[field])
+            return row
+
+        toreturn_dataframe = deepcopy(dataframe)
         for field in self.fields:
-            # Count how many times this postcode is seen, and use it as a where clause to transform
-            # or not
-            new_df = new_df.groupby(field).size().reset_index(  # type: ignore
-                name='postcode_counts')
-            new_df[field] = new_df[field].where(new_df['postcode_counts'] < 10).apply(
-                self.transform_datum
-            )
-        new_df.drop('postcode_counts')
-        return new_df
+            toreturn_dataframe['postcode_counts'] = toreturn_dataframe.groupby(  # type: ignore
+                field)[field].transform('count')
+            toreturn_dataframe = pandas.DataFrame(
+                toreturn_dataframe.apply(transform_if_lt_ten, axis=1))
+        return toreturn_dataframe
 
     def transform_datum(self, datum: str) -> str:
         """
@@ -33,7 +39,6 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
         :return: A transformed datapoint
         """
         try:
-            # TODO: This entire method should be in abstract class
             self.validate_postcode(datum)
             return datum[0:2]
         except Exception as e:
@@ -63,6 +68,6 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
                 type(to_validate), to_validate
             ))
 
-        if len(to_validate) > 3:
+        if len(to_validate) != 3:
             raise PostCodeValidationException(
-                'Postcode is supposed to be length 6-9, got {}'.format(to_validate))
+                'Postcode is supposed to be length 3, got {}'.format(to_validate))
