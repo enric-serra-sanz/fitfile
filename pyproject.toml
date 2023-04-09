@@ -68,6 +68,7 @@ dependencies = [ # Optional
   "types-python-dateutil",
   "mock",
   "openpyxl",
+  'faker',
 ]
 
 # List additional groups of dependencies here (e.g. development

@@ -9,8 +9,9 @@ setup(
     install_requires=[
         'types-python-dateutil',
         'mock',
+        'faker',
         'data-science-types',
-        'pandas',
+        'pandas~=2.0.0',
         'openpyxl',
     ],
     tests_require=test_requirements,
