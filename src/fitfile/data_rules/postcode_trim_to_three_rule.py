@@ -1,5 +1,6 @@
 from fitfile.data_rules.abstract_data_rule import AbstractDataRule
 from .exceptions import PostCodeValidationException
+import postcodes_uk
 
 
 class PostCodeTrimToThreeRule(AbstractDataRule):
@@ -16,7 +17,7 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
             self.validate_postcode(datum)
             return datum[0:3]
 
-        except Exception as e:
+        except PostCodeValidationException as e:
             self.on_validation_error(datum, e)
             return datum
 
@@ -33,7 +34,6 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
             raise PostCodeValidationException('Postcode is not a str, instead got {} on {}'.format(
                 type(to_validate), to_validate
             ))
-
-        if len(to_validate) > 9 or len(to_validate) < 5:
+        if not postcodes_uk.validate(to_validate):
             raise PostCodeValidationException(
                 'Postcode is supposed to be length 5-9, got {}'.format(to_validate))

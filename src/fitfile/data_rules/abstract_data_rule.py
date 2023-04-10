@@ -40,7 +40,9 @@ class AbstractDataRule(ABC):
 
     def on_validation_error(self, datum: Any, exception: Exception) -> None:
         """
-        What to do when an entry fails to validate (usually log it, stop or take other actions)
+        What to do when an entry fails to validate (usually log it, stop or take other actions),
+        default behaviour is to keep on processing as this might be a stream of data, overwrite on
+        subclass to change behaviour.
         :param datum: An entry
         :param exception: The Exception to raise
         :return: None
