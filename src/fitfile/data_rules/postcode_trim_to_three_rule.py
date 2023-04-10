@@ -1,4 +1,3 @@
-from typing import Union
 from fitfile.data_rules.abstract_data_rule import AbstractDataRule
 from .exceptions import PostCodeValidationException
 
@@ -20,15 +19,6 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
         except Exception as e:
             self.on_validation_error(datum, e)
             return datum
-
-    def on_validation_error(self, datum: Union[str, int, float], exception: Exception) -> None:
-        """
-        What to do when a validation fails
-        :param datum:
-        :param exception:
-        :return:
-        """
-        pass
 
     @staticmethod
     def validate_postcode(to_validate: str) -> None:
