@@ -1,6 +1,6 @@
 from fitfile.data_rules.abstract_data_rule import AbstractDataRule
 from .exceptions import PostCodeValidationException
-import postcodes_uk
+import postcodes_uk  # type: ignore
 
 
 class PostCodeTrimToThreeRule(AbstractDataRule):
