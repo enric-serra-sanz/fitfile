@@ -28,12 +28,7 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
         :param to_validate:
         :return:
         """
-        # Not going to properly validate as I would go insane checking the rules, just going to
-        # Check it is a str, and raise Exception is length too short or too long
-        if not isinstance(to_validate, str):
-            raise PostCodeValidationException('Postcode is not a str, instead got {} on {}'.format(
-                type(to_validate), to_validate
-            ))
+        # Leave the validation to postcodes_uk package
         if not postcodes_uk.validate(to_validate):
             raise PostCodeValidationException(
                 'Postcode is supposed to be length 5-9, got {}'.format(to_validate))
