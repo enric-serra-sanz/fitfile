@@ -40,7 +40,7 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
         try:
             self.validate_postcode(datum)
             return datum[0:2]
-        except Exception as e:
+        except PostCodeValidationException as e:
             self.on_validation_error(datum, e)
             return datum
 

@@ -25,7 +25,7 @@ class AgeBandRule(AbstractDataRule):
             date_of_birth = datetime.date.fromisoformat(datum)
             now = datetime.datetime.now()
             return self._to_ten_up_to_ninety_multiple(relativedelta(now, date_of_birth).years)
-        except Exception as e:
+        except AgeDatumException as e:
             self.on_validation_error(datum, e)
             return str(datum)
 
