@@ -38,5 +38,15 @@ must undergo each transformation.
 To execute the project:
 
 ```commandline
-python src/fitfile/run_jobs.py
+fitfile --json-file ./20230320_FITFILEPythonTest/PatientCohorts.json 
+--csv-file ./20230320_FITFILEPythonTest/customer.csv 
+--excel-file ./20230320_FITFILEPythonTest/ResearchList.xlsx --output-dir ./results
 ```
+
+To print help 
+```commandline
+fitfile --help
+```
+
+## Note: 
+I have only tested on python3.8

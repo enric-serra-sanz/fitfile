@@ -16,6 +16,9 @@ setup(
         'coverage',
         'postcodes-uk',
     ],
+    entry_points={
+        'console_scripts': ['fitfile=fitfile.run_jobs:main'],
+    },
     tests_require=test_requirements,
     license='',
     package_dir={'': 'src'},
