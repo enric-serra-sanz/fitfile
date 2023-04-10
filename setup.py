@@ -13,6 +13,7 @@ setup(
         'data-science-types',
         'pandas~=2.0.0',
         'openpyxl',
+        "coverage",
     ],
     tests_require=test_requirements,
     license='',

@@ -12,10 +12,11 @@ from copy import deepcopy
 
 
 class AbstractDataRule(ABC):
-    def __init__(self, fields: Optional[List[str]] = None) -> None:
+    def __init__(self, fields: Optional[List[str]] = None, logger: Optional[Any] = None) -> None:
         if fields is None:
             fields = []
         self.fields: List[str] = fields
+        self.logger = logger
 
     def apply_rule(self, dataframe: pandas.DataFrame) -> pandas.DataFrame:
         """
@@ -37,7 +38,6 @@ class AbstractDataRule(ABC):
         """
         pass
 
-    @abstractmethod
     def on_validation_error(self, datum: Any, exception: Exception) -> None:
         """
         What to do when an entry fails to validate (usually log it, stop or take other actions)
@@ -45,4 +45,6 @@ class AbstractDataRule(ABC):
         :param exception: The Exception to raise
         :return: None
         """
+        if self.logger is not None:
+            self.logger.error('Failed to validate {}, exception {}'.format(datum, exception))
         pass

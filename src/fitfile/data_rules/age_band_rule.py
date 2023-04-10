@@ -8,7 +8,7 @@ from .exceptions import AgeDatumException
 
 class AgeBandRule(AbstractDataRule):
     def __repr__(self) -> str:
-        return 'Rule one – Age Band Group'
+        return 'Rule one – Age Band Group 0-10, 10-20 ... 90+'
 
     def transform_datum(self, datum: Union[str, int, float]) -> str:
         """
@@ -43,12 +43,3 @@ class AgeBandRule(AbstractDataRule):
             modulo=modulo,
             modulo_plus_ten=modulo + 10,
         )
-
-    def on_validation_error(self, datum: Union[str, int, float], exception: Exception) -> None:
-        """
-        What to do when a validation fails
-        :param datum:
-        :param exception:
-        :return:
-        """
-        pass
