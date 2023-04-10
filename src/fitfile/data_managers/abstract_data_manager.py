@@ -3,6 +3,7 @@ from abc import (
     abstractmethod,
 )
 import pandas
+import os
 from typing import (
     Any,
     List,
@@ -11,9 +12,6 @@ from typing import (
 from copy import deepcopy
 from fitfile.data_rules import AbstractDataRule
 import logging
-
-
-logging.basicConfig()
 
 
 class AbstractDataManager(ABC):
@@ -25,8 +23,11 @@ class AbstractDataManager(ABC):
         self._dataframe: Optional[pandas.DataFrame] = None
         self._rules: List[Any] = []
         if logger is None:
-            logger = logging.getLogger(__name__)
-            logger.setLevel(logging.DEBUG)
+            logging.basicConfig(
+                datefmt='%H:%M:%S',
+                level=logging.INFO
+            )
+            logger = logging.getLogger('fitfile.data_manager')
         self.logger = logger
 
     def __repr__(self) -> str:
