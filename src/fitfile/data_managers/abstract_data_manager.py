@@ -76,7 +76,6 @@ class AbstractDataManager(ABC):
         :param kwargs: additional kwargs for to_json
         :return: None
         """
-        print('calling logger info')
         self.logger.info('Saving {} results to {}'.format(self, self.output_file_path))
         if dataframe is None:
             dataframe = self.dataframe

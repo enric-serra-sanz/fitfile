@@ -70,6 +70,7 @@ dependencies = [ # Optional
   "openpyxl",
   'faker',
   "coverage",
+  "postcodes-uk",
 ]
 
 # List additional groups of dependencies here (e.g. development
