@@ -82,7 +82,7 @@ class AgeBandRuleTest(DataRuleTester, unittest.TestCase):
 
     def test_calls_on_validation_error_when_dob_is_on_the_future(self):
         dataframe = pandas.DataFrame([{'dob': '2024-12-12'}])
-        negative_age = AgeBandRule(fields=['dob'])pull/7
+        negative_age = AgeBandRule(fields=['dob'])
         with patch.object(negative_age, 'on_validation_error') as mock_on_validation_error:
             results = negative_age.apply_rule(dataframe)
         mock_on_validation_error.assert_called()
