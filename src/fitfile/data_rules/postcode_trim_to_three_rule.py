@@ -13,16 +13,9 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
         :param datum: A single datapoint
         :return: A transformed datapoint
         """
-        try:
-            self.validate_postcode(datum)
-            return datum[0:3]
+        return datum[0:3]
 
-        except PostCodeValidationException as e:
-            self.on_validation_error(datum, e)
-            return datum
-
-    @staticmethod
-    def validate_postcode(to_validate: str) -> None:
+    def validate_datum(self, to_validate: str) -> None:
         """
         Validates a postcode string
         :param to_validate:
@@ -30,5 +23,6 @@ class PostCodeTrimToThreeRule(AbstractDataRule):
         """
         # Leave the validation to postcodes_uk package
         if not postcodes_uk.validate(to_validate):
-            raise PostCodeValidationException(
-                'Postcode is supposed to be length 5-9, got {}'.format(to_validate))
+            raise PostCodeValidationException('Postcode failed to validate {} '.format(
+                to_validate
+            ))

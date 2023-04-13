@@ -19,12 +19,18 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
             :param row: The row to process
             :return: Modified row if counts < 10, unmodified row otherwise
             """
+            try:
+                self.validate_datum(row[field])
+            except Exception as e:
+                self.on_validation_error(row, e)
+                return row
             if row['postcode_counts'] < 10:
                 row[field] = self.transform_datum(row[field])
             return row
 
         toreturn_dataframe = deepcopy(dataframe)
         for field in self.fields:
+
             toreturn_dataframe['postcode_counts'] = toreturn_dataframe.groupby(  # type: ignore
                 field)[field].transform('count')
             toreturn_dataframe = pandas.DataFrame(
@@ -37,27 +43,18 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
         :param datum: A single datapoint
         :return: A transformed datapoint
         """
-        try:
-            self.validate_postcode(datum)
-            return datum[0:2]
-        except PostCodeValidationException as e:
-            self.on_validation_error(datum, e)
-            return datum
+        return datum[0:2]
 
-    @staticmethod
-    def validate_postcode(to_validate: str) -> None:
+    def validate_datum(self, to_validate: str) -> None:
         """
-        Validates a postcode string
+        Validates a previously trimmed to length 3 postcode string
         :param to_validate:
         :return:
         """
-        # Not going to properly validate as I would go insane checking the rules, just going to
-        # Check it is a str, and raise Exception is length too short or too long
         if not isinstance(to_validate, str):
             raise PostCodeValidationException('Postcode is not a str, instead got {} on {}'.format(
                 type(to_validate), to_validate
             ))
-
         if len(to_validate) != 3:
             raise PostCodeValidationException(
                 'Postcode is supposed to be length 3, got {}'.format(to_validate))

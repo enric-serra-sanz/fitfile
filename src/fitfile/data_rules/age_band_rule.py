@@ -16,18 +16,11 @@ class AgeBandRule(AbstractDataRule):
         :param datum: A single datapoint
         :return: A transformed datapoint
         """
-        try:
-            if isinstance(datum, int) or isinstance(datum, float):
-                if datum < 0:
-                    raise AgeDatumException(
-                        'Negative values are not supported for age, got {}'.format(datum))
-                return self._to_ten_up_to_ninety_multiple(int(datum))
-            date_of_birth = datetime.date.fromisoformat(datum)
-            now = datetime.datetime.now()
-            return self._to_ten_up_to_ninety_multiple(relativedelta(now, date_of_birth).years)
-        except Exception as e:
-            self.on_validation_error(datum, e)
-            return str(datum)
+        if isinstance(datum, int) or isinstance(datum, float):
+            return self._to_ten_up_to_ninety_multiple(int(datum))
+        date_of_birth = datetime.date.fromisoformat(datum)
+        now = datetime.datetime.now()
+        return self._to_ten_up_to_ninety_multiple(relativedelta(now, date_of_birth).years)
 
     @staticmethod
     def _to_ten_up_to_ninety_multiple(age: int) -> str:
@@ -43,3 +36,39 @@ class AgeBandRule(AbstractDataRule):
             modulo=modulo,
             modulo_plus_ten=modulo + 10,
         )
+
+    def validate_datum(self, datum: Union[str, int, float]) -> None:
+        """
+        Validates a dob/age datum depending on type
+        :param datum: The datapoint to validate
+        :return: None, raises AgeDatumException
+        """
+        if isinstance(datum, int) or isinstance(datum, float):
+            return self._validate_numerical_age(datum)
+        return self._validate_isoformat_date(datum)
+
+    @staticmethod
+    def _validate_numerical_age(datum: Union[int, float]) -> None:
+        """
+        Validates an age with a numerical value
+        :param datum: The datapoint to validate, either an int or a float
+        :return: None
+        """
+        if datum < 0:
+            raise AgeDatumException(
+                'Negative values are not supported for age, got {}'.format(datum))
+
+    @staticmethod
+    def _validate_isoformat_date(datum: str) -> None:
+        """
+        Validates an iso format date datapoint
+        :param datum: The datapoint to validate
+        :return: None
+        """
+        try:
+            now = datetime.datetime.now()
+            date_of_birth = datetime.datetime.fromisoformat(datum)
+            if date_of_birth > now:
+                raise AgeDatumException('Date of birth is in the future, {}'.format(date_of_birth))
+        except ValueError as e:
+            raise AgeDatumException(e)
