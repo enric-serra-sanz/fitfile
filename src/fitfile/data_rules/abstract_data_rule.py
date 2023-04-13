@@ -27,7 +27,7 @@ class AbstractDataRule(ABC):
         """
         new_df = deepcopy(dataframe)
         for field in self.fields:
-            new_df[field] = new_df[field].apply(self.transform_datum, True)
+            new_df[field] = new_df[field].apply(self.validate_and_transform, True)
         return new_df
 
     @abstractmethod
@@ -38,6 +38,14 @@ class AbstractDataRule(ABC):
         :return: A transformed datapoint
         """
         pass
+
+    def validate_and_transform(self, datum: Any) -> Any:
+        try:
+            self.validate_datum(datum)
+            return self.transform_datum(datum)
+        except Exception as e:
+            self.on_validation_error(datum, e)
+            return str(datum)
 
     def on_validation_error(self, datum: Any, exception: Exception) -> None:
         """
@@ -51,3 +59,11 @@ class AbstractDataRule(ABC):
         if self.logger is not None:
             self.logger.error('Failed to validate {}, exception {}'.format(datum, exception))
         self.error = True
+
+    @abstractmethod
+    def validate_datum(self, datum):
+        """
+        Method to validate a data entry
+        :return:
+        """
+        pass

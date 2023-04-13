@@ -19,12 +19,18 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
             :param row: The row to process
             :return: Modified row if counts < 10, unmodified row otherwise
             """
+            try:
+                self.validate_datum(row[field])
+            except Exception as e:
+                self.on_validation_error(row, e)
+                return row
             if row['postcode_counts'] < 10:
                 row[field] = self.transform_datum(row[field])
             return row
 
         toreturn_dataframe = deepcopy(dataframe)
         for field in self.fields:
+
             toreturn_dataframe['postcode_counts'] = toreturn_dataframe.groupby(  # type: ignore
                 field)[field].transform('count')
             toreturn_dataframe = pandas.DataFrame(
@@ -37,15 +43,9 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
         :param datum: A single datapoint
         :return: A transformed datapoint
         """
-        try:
-            self.validate_postcode(datum)
-            return datum[0:2]
-        except PostCodeValidationException as e:
-            self.on_validation_error(datum, e)
-            return datum
+        return datum[0:2]
 
-    @staticmethod
-    def validate_postcode(to_validate: str) -> None:
+    def validate_datum(self, to_validate: str) -> None:
         """
         Validates a postcode string
         :param to_validate:
