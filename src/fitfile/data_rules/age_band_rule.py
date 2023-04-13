@@ -37,7 +37,7 @@ class AgeBandRule(AbstractDataRule):
             modulo_plus_ten=modulo + 10,
         )
 
-    def validate_datum(self, datum) -> None:
+    def validate_datum(self, datum: Union[str, int, float]) -> None:
         """
         Validates a dob/age datum depending on type
         :param datum: The datapoint to validate

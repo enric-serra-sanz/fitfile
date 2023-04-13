@@ -47,17 +47,14 @@ class PostCodeTrimToTwoRule(AbstractDataRule):
 
     def validate_datum(self, to_validate: str) -> None:
         """
-        Validates a postcode string
+        Validates a previously trimmed to length 3 postcode string
         :param to_validate:
         :return:
         """
-        # Not going to properly validate as I would go insane checking the rules, just going to
-        # Check it is a str, and raise Exception is length too short or too long
         if not isinstance(to_validate, str):
             raise PostCodeValidationException('Postcode is not a str, instead got {} on {}'.format(
                 type(to_validate), to_validate
             ))
-
         if len(to_validate) != 3:
             raise PostCodeValidationException(
                 'Postcode is supposed to be length 3, got {}'.format(to_validate))

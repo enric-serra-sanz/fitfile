@@ -61,9 +61,9 @@ class AbstractDataRule(ABC):
         self.error = True
 
     @abstractmethod
-    def validate_datum(self, datum):
+    def validate_datum(self, datum: Any) -> None:
         """
-        Method to validate a data entry
-        :return:
+        Method to validate a data entry, raises some exception and calls self.on_validation_error
+        :return: None
         """
         pass
