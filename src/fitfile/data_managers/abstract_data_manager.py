@@ -1,3 +1,4 @@
+import datetime
 from abc import (
     ABC,
     abstractmethod,
@@ -11,6 +12,7 @@ from typing import (
 from copy import deepcopy
 from fitfile.data_rules import AbstractDataRule
 import logging
+from dateutil.relativedelta import relativedelta
 
 
 class AbstractDataManager(ABC):
@@ -30,10 +32,11 @@ class AbstractDataManager(ABC):
         self.logger = logger
 
     def __repr__(self) -> str:
-        return '{} for request ID: {} with rules: {}'.format(
+        return '{} for request ID: {} with rules: {}, on file: {}'.format(
             self.__class__.__name__,
             self.request_id,
-            [r for r in self.rules]
+            [r for r in self.rules],
+            self.input_file_path,
         )
 
     @property
@@ -95,8 +98,35 @@ class AbstractDataManager(ABC):
         saves to a json out
         :return: None
         """
-        self.logger.info('Executing {} '.format(self))
+        start = datetime.datetime.now()
+        self.logger.info('Executing: {}, start time: {} '.format(self, start))
         to_save_df = deepcopy(self.dataframe)
         for rule in self.rules:
+
             to_save_df = rule.apply_rule(to_save_df)
         self.save_to_json_out(to_save_df)
+        wallclock = relativedelta(datetime.datetime.now(), start).microseconds
+        self.logger.info('Completed {} with status {} in {} microseconds'.format(
+            self,
+            self.error_string,
+            wallclock
+        ))
+
+    @property
+    def error(self) -> bool:
+        """
+        Returns the error status, which is the product of the error status of rules
+        :return: Boolean, whether any of the rules have failed or not
+        """
+        return any([rule.error for rule in self.rules])
+
+    @property
+    def error_string(self) -> str:
+        """
+        Returns the task status as a string
+        :return: A string representing the task status
+        """
+        return {
+            False: 'SUCCESS',
+            True: 'FAIL'
+        }[self.error]

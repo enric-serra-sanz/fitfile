@@ -17,6 +17,7 @@ class AbstractDataRule(ABC):
             fields = []
         self.fields: List[str] = fields
         self.logger = logger
+        self.error: bool = False
 
     def apply_rule(self, dataframe: pandas.DataFrame) -> pandas.DataFrame:
         """
@@ -49,4 +50,4 @@ class AbstractDataRule(ABC):
         """
         if self.logger is not None:
             self.logger.error('Failed to validate {}, exception {}'.format(datum, exception))
-        pass
+        self.error = True
